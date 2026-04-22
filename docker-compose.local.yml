@@ -35,6 +35,7 @@ services:
       - DATABASE_URL=postgresql://tea_user:tea_password@postgres:5432/tea_dev
       # Increase Node.js memory limit for Next.js dev server
       - NODE_OPTIONS=--max-old-space-size=4096
+      - SEED_USER_PASSWORD=password123
     volumes:
       - .:/app
       - app_next:/app/.next
@@ -47,7 +48,7 @@ services:
     # Run in production mode to avoid Nextra dev compilation crashes
     # For hot reload, run `pnpm dev` on localhost instead
     command:
-      sh -c "npx prisma migrate deploy && npx tsx prisma/seed/dev-seed.ts && if [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build && pnpm start; else npm run build && npm start; fi"
+      sh -c "npx prisma generate --schema=prisma/schema.prisma && npx prisma migrate deploy && npx tsx prisma/seed/dev-seed.ts && pnpm dev"
 
 networks:
   tea_dev_network:
